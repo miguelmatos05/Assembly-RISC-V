@@ -1,0 +1,49 @@
+.data
+vetor: .word -5, 0, 3, 26, 99
+.align 2
+resultado:  .word 0
+
+.text 
+.globl main
+main:
+
+la a0,vetor
+li a1,5
+jal  ra, conta_impares
+
+la t0,resultado
+sw a0,0(t0)
+
+li   a7, 1             # imprime o inteiro em a0
+ecall
+
+li   a7, 10            # termina
+ecall
+
+# a0 = endereço do vetor de words
+# a1 = número de elementos
+# Retorna em a0 o número de ímpares
+
+conta_impares:
+mv t0,a0
+mv t1,a1
+li t2,0  #Conta os ímpares
+
+conta_impares_loop:
+
+beq t1,zero,conta_impares_fim
+
+lw t3,0(t0)
+andi t3,t3,1 #isola o bit 0
+add  t2,t2,t3 #soma 0 ou 1
+
+
+addi t0, t0, 4         # próximo elemento (word = 4 bytes)
+addi t1, t1, -1
+    j   conta_impares_loop
+    
+    
+conta_impares_fim:
+mv a0,t2
+ret
+
